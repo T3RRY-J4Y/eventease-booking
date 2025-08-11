@@ -1,4 +1,5 @@
 using System;
+using EventEase.Web.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace EventEase.Web.Controllers
         // GET: Events
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.Event.Include(e => e.Venue);
+            var appDbContext = _context.Events.Include(e => e.Venue);
             return View(await appDbContext.ToListAsync());
         }
 
@@ -32,7 +33,7 @@ namespace EventEase.Web.Controllers
                 return NotFound();
             }
 
-            var @event = await _context.Event
+            var @event = await _context.Events
                 .Include(e => e.Venue)
                 .FirstOrDefaultAsync(m => m.EventId == id);
             if (@event == null)
@@ -46,7 +47,7 @@ namespace EventEase.Web.Controllers
         // GET: Events/Create
         public IActionResult Create()
         {
-            ViewData["VenueId"] = new SelectList(_context.Venue, "VenueId", "VenueId");
+            ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueId");
             return View();
         }
 
@@ -63,7 +64,7 @@ namespace EventEase.Web.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["VenueId"] = new SelectList(_context.Venue, "VenueId", "VenueId", @event.VenueId);
+            ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueId", @event.VenueId);
             return View(@event);
         }
 
@@ -75,12 +76,12 @@ namespace EventEase.Web.Controllers
                 return NotFound();
             }
 
-            var @event = await _context.Event.FindAsync(id);
+            var @event = await _context.Events.FindAsync(id);
             if (@event == null)
             {
                 return NotFound();
             }
-            ViewData["VenueId"] = new SelectList(_context.Venue, "VenueId", "VenueId", @event.VenueId);
+            ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueId", @event.VenueId);
             return View(@event);
         }
 
@@ -116,7 +117,7 @@ namespace EventEase.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["VenueId"] = new SelectList(_context.Venue, "VenueId", "VenueId", @event.VenueId);
+            ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueId", @event.VenueId);
             return View(@event);
         }
 
@@ -128,7 +129,7 @@ namespace EventEase.Web.Controllers
                 return NotFound();
             }
 
-            var @event = await _context.Event
+            var @event = await _context.Events
                 .Include(e => e.Venue)
                 .FirstOrDefaultAsync(m => m.EventId == id);
             if (@event == null)
@@ -144,10 +145,10 @@ namespace EventEase.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var @event = await _context.Event.FindAsync(id);
+            var @event = await _context.Events.FindAsync(id);
             if (@event != null)
             {
-                _context.Event.Remove(@event);
+                _context.Events.Remove(@event);
             }
 
             await _context.SaveChangesAsync();
@@ -156,7 +157,7 @@ namespace EventEase.Web.Controllers
 
         private bool EventExists(int id)
         {
-            return _context.Event.Any(e => e.EventId == id);
+            return _context.Events.Any(e => e.EventId == id);
         }
     }
 }

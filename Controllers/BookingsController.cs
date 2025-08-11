@@ -1,4 +1,5 @@
 using System;
+using EventEase.Web.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace EventEase.Web.Controllers
         // GET: Bookings
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.Booking.Include(b => b.Event).Include(b => b.Venue);
+            var appDbContext = _context.Bookings.Include(b => b.Event).Include(b => b.Venue);
             return View(await appDbContext.ToListAsync());
         }
 
@@ -32,7 +33,7 @@ namespace EventEase.Web.Controllers
                 return NotFound();
             }
 
-            var booking = await _context.Booking
+            var booking = await _context.Bookings
                 .Include(b => b.Event)
                 .Include(b => b.Venue)
                 .FirstOrDefaultAsync(m => m.BookingId == id);
@@ -47,8 +48,8 @@ namespace EventEase.Web.Controllers
         // GET: Bookings/Create
         public IActionResult Create()
         {
-            ViewData["EventId"] = new SelectList(_context.Event, "EventId", "EventId");
-            ViewData["VenueId"] = new SelectList(_context.Venue, "VenueId", "VenueId");
+            ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventId");
+            ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueId");
             return View();
         }
 
@@ -65,8 +66,8 @@ namespace EventEase.Web.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EventId"] = new SelectList(_context.Event, "EventId", "EventId", booking.EventId);
-            ViewData["VenueId"] = new SelectList(_context.Venue, "VenueId", "VenueId", booking.VenueId);
+            ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventId", booking.EventId);
+            ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueId", booking.VenueId);
             return View(booking);
         }
 
@@ -78,13 +79,13 @@ namespace EventEase.Web.Controllers
                 return NotFound();
             }
 
-            var booking = await _context.Booking.FindAsync(id);
+            var booking = await _context.Bookings.FindAsync(id);
             if (booking == null)
             {
                 return NotFound();
             }
-            ViewData["EventId"] = new SelectList(_context.Event, "EventId", "EventId", booking.EventId);
-            ViewData["VenueId"] = new SelectList(_context.Venue, "VenueId", "VenueId", booking.VenueId);
+            ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventId", booking.EventId);
+            ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueId", booking.VenueId);
             return View(booking);
         }
 
@@ -120,8 +121,8 @@ namespace EventEase.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EventId"] = new SelectList(_context.Event, "EventId", "EventId", booking.EventId);
-            ViewData["VenueId"] = new SelectList(_context.Venue, "VenueId", "VenueId", booking.VenueId);
+            ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventId", booking.EventId);
+            ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueId", booking.VenueId);
             return View(booking);
         }
 
@@ -133,7 +134,7 @@ namespace EventEase.Web.Controllers
                 return NotFound();
             }
 
-            var booking = await _context.Booking
+            var booking = await _context.Bookings
                 .Include(b => b.Event)
                 .Include(b => b.Venue)
                 .FirstOrDefaultAsync(m => m.BookingId == id);
@@ -150,10 +151,10 @@ namespace EventEase.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var booking = await _context.Booking.FindAsync(id);
+            var booking = await _context.Bookings.FindAsync(id);
             if (booking != null)
             {
-                _context.Booking.Remove(booking);
+                _context.Bookings.Remove(booking);
             }
 
             await _context.SaveChangesAsync();
@@ -162,7 +163,7 @@ namespace EventEase.Web.Controllers
 
         private bool BookingExists(int id)
         {
-            return _context.Booking.Any(e => e.BookingId == id);
+            return _context.Bookings.Any(e => e.BookingId == id);
         }
     }
 }

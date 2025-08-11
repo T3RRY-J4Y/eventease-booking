@@ -1,4 +1,6 @@
 using System;
+using EventEase.Web.Data;
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,7 +22,7 @@ namespace EventEase.Web.Controllers
         // GET: Venues
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Venue.ToListAsync());
+            return View(await _context.Venues.ToListAsync());
         }
 
         // GET: Venues/Details/5
@@ -31,7 +33,7 @@ namespace EventEase.Web.Controllers
                 return NotFound();
             }
 
-            var venue = await _context.Venue
+            var venue = await _context.Venues
                 .FirstOrDefaultAsync(m => m.VenueId == id);
             if (venue == null)
             {
@@ -71,7 +73,7 @@ namespace EventEase.Web.Controllers
                 return NotFound();
             }
 
-            var venue = await _context.Venue.FindAsync(id);
+            var venue = await _context.Venues.FindAsync(id);
             if (venue == null)
             {
                 return NotFound();
@@ -122,7 +124,7 @@ namespace EventEase.Web.Controllers
                 return NotFound();
             }
 
-            var venue = await _context.Venue
+            var venue = await _context.Venues
                 .FirstOrDefaultAsync(m => m.VenueId == id);
             if (venue == null)
             {
@@ -137,10 +139,10 @@ namespace EventEase.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var venue = await _context.Venue.FindAsync(id);
+            var venue = await _context.Venues.FindAsync(id);
             if (venue != null)
             {
-                _context.Venue.Remove(venue);
+                _context.Venues.Remove(venue);
             }
 
             await _context.SaveChangesAsync();
@@ -149,7 +151,7 @@ namespace EventEase.Web.Controllers
 
         private bool VenueExists(int id)
         {
-            return _context.Venue.Any(e => e.VenueId == id);
+            return _context.Venues.Any(e => e.VenueId == id);
         }
     }
 }
