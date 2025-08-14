@@ -38,6 +38,17 @@ namespace EventEase.Web.Controllers
             return View(@event);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetEventDate(int id)
+        {
+            var ev = await _context.Events.FindAsync(id);
+            if (ev == null)
+            {
+                return NotFound();
+            }
+            return Json(new { date = ev.EventDate.ToString("yyyy-MM-dd") });
+        }
+
         // GET: Events/Create
         public IActionResult Create()
         {

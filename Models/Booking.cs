@@ -16,9 +16,8 @@ namespace EventEase.Web.Models
         public int VenueId { get; set; }
         public Venue Venue { get; set; }
 
-        [Required]
         [DataType(DataType.Date)]
         [Display(Name = "Booking Date")]
-        public DateTime BookingDate { get; set; } = DateTime.Now;
+        public DateTime BookingDate { get; set; }
     }
 }
