@@ -1,11 +1,10 @@
 using System;
 using EventEase.Web.Data;
-
+using EventEase.Web.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventEase.Web.Controllers
@@ -28,17 +27,10 @@ namespace EventEase.Web.Controllers
         // GET: Venues/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var venue = await _context.Venues
-                .FirstOrDefaultAsync(m => m.VenueId == id);
-            if (venue == null)
-            {
-                return NotFound();
-            }
+            var venue = await _context.Venues.FirstOrDefaultAsync(m => m.VenueId == id);
+            if (venue == null) return NotFound();
 
             return View(venue);
         }
@@ -50,8 +42,6 @@ namespace EventEase.Web.Controllers
         }
 
         // POST: Venues/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("VenueId,VenueName,Location,Capacity,ImageUrl")] Venue venue)
@@ -65,71 +55,59 @@ namespace EventEase.Web.Controllers
             return View(venue);
         }
 
+
+
+
         // GET: Venues/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var venue = await _context.Venues.FindAsync(id);
-            if (venue == null)
-            {
-                return NotFound();
-            }
+            if (venue == null) return NotFound();
+
             return View(venue);
         }
 
         // POST: Venues/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("VenueId,VenueName,Location,Capacity,ImageUrl")] Venue venue)
         {
-            if (id != venue.VenueId)
+            if (id != venue.VenueId) return NotFound();
+
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                return View(venue);
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(venue);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!VenueExists(venue.VenueId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _context.Update(venue);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(venue);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!VenueExists(venue.VenueId))
+                    return NotFound();
+                else
+                    throw;
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"Error updating venue: {ex.Message}");
+                return View(venue);
+            }
         }
 
         // GET: Venues/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var venue = await _context.Venues
-                .FirstOrDefaultAsync(m => m.VenueId == id);
-            if (venue == null)
-            {
-                return NotFound();
-            }
+            var venue = await _context.Venues.FirstOrDefaultAsync(m => m.VenueId == id);
+            if (venue == null) return NotFound();
 
             return View(venue);
         }
@@ -143,9 +121,9 @@ namespace EventEase.Web.Controllers
             if (venue != null)
             {
                 _context.Venues.Remove(venue);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
