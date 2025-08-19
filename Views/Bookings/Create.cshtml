@@ -13,7 +13,8 @@
         <form asp-action="Create" method="post">
             @Html.AntiForgeryToken()
 
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <!-- Single validation summary -->
+            <div asp-validation-summary="All" class="text-danger"></div>
 
             <div class="form-group">
                 <label asp-for="EventId" class="control-label"></label>
@@ -27,13 +28,14 @@
                 <span asp-validation-for="VenueId" class="text-danger"></span>
             </div>
 
-            <!-- Display only (not submitted) -->
             <div class="form-group">
                 <label asp-for="BookingDate" class="control-label"></label>
-                <input type="text" class="form-control" id="bookingDate"
-                       value="@ViewBag.BookingDate" disabled />
+                <input type="text" class="form-control" id="bookingDateDisplay" readonly />
+                <span asp-validation-for="BookingDate" class="text-danger"></span>
             </div>
 
+            <!-- Hidden input so BookingDate is actually posted -->
+            <input type="hidden" asp-for="BookingDate" id="bookingDate" />
 
             <div class="form-group mt-3">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -47,26 +49,44 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 
     <script>
-        document.getElementById('eventSelect').addEventListener('change', function () {
-            var selectedEventId = this.value;
-            var bookingDateInput = document.getElementById('bookingDate');
+        function updateBookingDate(eventId) {
+            var bookingDateHidden = document.getElementById('bookingDate');
+            var bookingDateDisplay = document.getElementById('bookingDateDisplay');
 
-            if (selectedEventId) {
-                fetch('/Events/GetEventDate/' + selectedEventId)
+            if (eventId) {
+                fetch('/Events/GetEventDate/' + eventId)
                     .then(response => response.json())
                     .then(data => {
-                        bookingDateInput.value = data.date;
+                        // format to yyyy-MM-dd so model binder accepts it
+                        let date = new Date(data.date);
+                        let formatted = date.toISOString().split('T')[0];
+
+                        bookingDateHidden.value = formatted;
+                        bookingDateDisplay.value = formatted;
                     })
                     .catch(() => {
-                        bookingDateInput.value = '';
+                        bookingDateHidden.value = '';
+                        bookingDateDisplay.value = '';
                     });
             } else {
-                bookingDateInput.value = '';
+                bookingDateHidden.value = '';
+                bookingDateDisplay.value = '';
+            }
+        }
+
+        // Populate on dropdown change
+        document.getElementById('eventSelect').addEventListener('change', function () {
+            updateBookingDate(this.value);
+        });
+
+        // Populate immediately for preselected event
+        document.addEventListener('DOMContentLoaded', function () {
+            var initialEventId = document.getElementById('eventSelect').value;
+            if (initialEventId) {
+                updateBookingDate(initialEventId);
             }
         });
     </script>
