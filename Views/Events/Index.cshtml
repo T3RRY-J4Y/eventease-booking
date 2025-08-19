@@ -1,54 +1,49 @@
-@model IEnumerable<Event>
+@model IEnumerable<EventEase.Web.Models.Booking>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Bookings";
 }
 
-<h1>Events</h1>
+<h1>Bookings</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-primary"> Create New Event </a>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
 </p>
-<table class="table">
+
+<table class="table table-striped">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.EventName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EventDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
+                @Html.DisplayNameFor(model => model.Event)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Venue)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BookingDate)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.EventName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EventDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Venue.VenueName)
-            </td>
+        @foreach (var item in Model)
+        {
+            <tr>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.EventId" class="btn btn-sm btn-primary me-1">Edit</a>
-                    <a asp-action="Details" asp-route-id="@item.EventId" class="btn btn-sm btn-info me-1">Details</a>
-                    <a asp-action="Delete" asp-route-id="@item.EventId" class="btn btn-sm btn-danger">Delete</a>
+                    @item.Event?.EventName
                 </td>
-
-        </tr>
-}
+                <td>
+                    @item.Venue?.VenueName
+                </td>
+                <td>
+                    @item.BookingDate?.ToString("yyyy-MM-dd")
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.BookingId" class="btn btn-info btn-sm">Details</a> |
+                    <a asp-action="Edit" asp-route-id="@item.BookingId" class="btn btn-warning btn-sm">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.BookingId" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
