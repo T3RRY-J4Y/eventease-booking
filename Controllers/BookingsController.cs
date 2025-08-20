@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EventEase.Web.Data;
 using EventEase.Web.Models;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace EventEase.Web.Controllers
 {
@@ -22,29 +20,24 @@ namespace EventEase.Web.Controllers
         // GET: Bookings
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.Bookings
+            var bookings = _context.Bookings
                 .Include(b => b.Event)
                 .Include(b => b.Venue);
-            return View(await appDbContext.ToListAsync());
+
+            return View(await bookings.ToListAsync());
         }
 
         // GET: Bookings/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var booking = await _context.Bookings
                 .Include(b => b.Event)
                 .Include(b => b.Venue)
-                .FirstOrDefaultAsync(m => m.BookingId == id);
+                .FirstOrDefaultAsync(b => b.BookingId == id);
 
-            if (booking == null)
-            {
-                return NotFound();
-            }
+            if (booking == null) return NotFound();
 
             return View(booking);
         }
@@ -52,130 +45,101 @@ namespace EventEase.Web.Controllers
         // GET: Bookings/Create
         public IActionResult Create()
         {
-            ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventName");
-            ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueName");
+            PopulateDropdowns();
             return View();
         }
 
         // POST: Bookings/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EventId,VenueId,BookingDate")] Booking booking)
+        public async Task<IActionResult> Create([Bind("EventId,VenueId")] Booking booking)
         {
             if (ModelState.IsValid)
             {
-                // Always fetch date from the Event table
-                var selectedEvent = await _context.Events
-                    .FirstOrDefaultAsync(e => e.EventId == booking.EventId);
-
+                var selectedEvent = await _context.Events.FirstOrDefaultAsync(e => e.EventId == booking.EventId);
                 if (selectedEvent != null)
-                {
                     booking.BookingDate = selectedEvent.EventDate;
-                }
 
                 _context.Add(booking);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            // Repopulate dropdowns on error
-            ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventName", booking.EventId);
-            ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueName", booking.VenueId);
-
+            // Repopulate dropdowns if validation fails
+            PopulateDropdowns(booking.EventId, booking.VenueId);
             return View(booking);
         }
 
+        private void PopulateDropdowns(int? selectedEventId = null, int? selectedVenueId = null)
+        {
+            var events = _context.Events.ToList();
+            var venues = _context.Venues.ToList();
+
+            ViewBag.EventId = new SelectList(events, "EventId", "EventName", selectedEventId)
+                                  .Prepend(new SelectListItem { Text = "-- Select Event --", Value = "" });
+
+            ViewBag.VenueId = new SelectList(venues, "VenueId", "VenueName", selectedVenueId)
+                                  .Prepend(new SelectListItem { Text = "-- Select Venue --", Value = "" });
+        }
+
+        // GET: Bookings/Edit/5
         // GET: Bookings/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id == null) return NotFound();
+
+            var booking = await _context.Bookings.FindAsync(id);
+            if (booking == null) return NotFound();
+
+            PopulateDropdowns(booking.EventId, booking.VenueId);
+            return View(booking);
+        }
+
+
+        // POST: Bookings/Edit/5
+        // POST: Bookings/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("BookingId,EventId,VenueId")] Booking booking)
+        {
+            if (id != booking.BookingId) return NotFound();
+
+            if (ModelState.IsValid)
             {
-                return NotFound();
+                try
+                {
+                    var selectedEvent = await _context.Events.FirstOrDefaultAsync(e => e.EventId == booking.EventId);
+                    if (selectedEvent != null)
+                        booking.BookingDate = selectedEvent.EventDate;
+
+                    _context.Update(booking);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!BookingExists(booking.BookingId)) return NotFound();
+                    else throw;
+                }
             }
+
+            // Repopulate dropdowns if validation fails
+            PopulateDropdowns(booking.EventId, booking.VenueId);
+            return View(booking);
+        }
+
+
+        // GET: Bookings/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null) return NotFound();
 
             var booking = await _context.Bookings
                 .Include(b => b.Event)
                 .Include(b => b.Venue)
                 .FirstOrDefaultAsync(b => b.BookingId == id);
 
-            if (booking == null)
-            {
-                return NotFound();
-            }
-
-            ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventName", booking.EventId);
-            ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueName", booking.VenueId);
-
-            return View(booking);
-        }
-
-        // POST: Bookings/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BookingId,EventId,VenueId,BookingDate")] Booking booking)
-        {
-            if (id != booking.BookingId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    // Refresh booking date from selected event
-                    var selectedEvent = await _context.Events
-                        .FirstOrDefaultAsync(e => e.EventId == booking.EventId);
-
-                    if (selectedEvent == null)
-                    {
-                        ModelState.AddModelError("EventId", "Selected event does not exist.");
-                    }
-                    else
-                    {
-                        booking.BookingDate = selectedEvent.EventDate;
-
-                        _context.Update(booking);
-                        await _context.SaveChangesAsync();
-                        return RedirectToAction(nameof(Index));
-                    }
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!BookingExists(booking.BookingId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-            }
-
-            ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventName", booking.EventId);
-            ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueName", booking.VenueId);
-
-            return View(booking);
-        }
-
-        // GET: Bookings/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var booking = await _context.Bookings
-                .Include(b => b.Event)
-                .Include(b => b.Venue)
-                .FirstOrDefaultAsync(m => m.BookingId == id);
-
-            if (booking == null)
-            {
-                return NotFound();
-            }
+            if (booking == null) return NotFound();
 
             return View(booking);
         }
@@ -186,13 +150,11 @@ namespace EventEase.Web.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var booking = await _context.Bookings.FindAsync(id);
-            if (booking == null)
+            if (booking != null)
             {
-                return NotFound();
+                _context.Bookings.Remove(booking);
+                await _context.SaveChangesAsync();
             }
-
-            _context.Bookings.Remove(booking);
-            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
