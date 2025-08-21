@@ -9,33 +9,33 @@
 
 <div class="row justify-content-center">
     <div class="col-md-6">
-        <form asp-action="Edit" method="post">
+        <form asp-action="Edit" method="post" class="p-4 bg-light border rounded shadow-sm">
             @Html.AntiForgeryToken()
             <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
             <input type="hidden" asp-for="BookingId" />
-            <div class="form-group mb-3">
-                <label asp-for="EventId" class="control-label"></label>
-                <select asp-for="EventId" class="form-control" asp-items="ViewBag.EventId" id="eventSelect"></select>
+            <div class="mb-3">
+                <label asp-for="EventId" class="form-label"></label>
+                <select asp-for="EventId" class="form-select" asp-items="ViewBag.EventId" id="eventSelect"></select>
                 <span asp-validation-for="EventId" class="text-danger"></span>
             </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="VenueId" class="control-label"></label>
-                <select asp-for="VenueId" class="form-control" asp-items="ViewBag.VenueId"></select>
+            <div class="mb-3">
+                <label asp-for="VenueId" class="form-label"></label>
+                <select asp-for="VenueId" class="form-select" asp-items="ViewBag.VenueId"></select>
                 <span asp-validation-for="VenueId" class="text-danger"></span>
             </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="BookingDate" class="control-label"></label>
+            <div class="mb-3">
+                <label asp-for="BookingDate" class="form-label"></label>
                 <input type="text" class="form-control" id="bookingDateDisplay" readonly value="@Model.BookingDate?.ToString("yyyy-MM-dd")" />
             </div>
 
-            <div class="form-group mb-3">
+            <div class="mb-3">
                 <label>Start Time</label>
                 <input type="text" class="form-control" id="startTimeDisplay" readonly value="@Model.StartTime?.ToString("HH:mm")" />
             </div>
-            <div class="form-group mb-3">
+            <div class="mb-3">
                 <label>End Time</label>
                 <input type="text" class="form-control" id="endTimeDisplay" readonly value="@Model.EndTime?.ToString("HH:mm")" />
             </div>
