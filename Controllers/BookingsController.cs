@@ -68,8 +68,6 @@ namespace EventEase.Web.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-
-            // Repopulate dropdowns if validation fails
             PopulateDropdowns(booking.EventId, booking.VenueId);
             return View(booking);
         }
@@ -115,8 +113,6 @@ namespace EventEase.Web.Controllers
                     else throw;
                 }
             }
-
-            // Repopulate dropdowns if validation fails
             PopulateDropdowns(booking.EventId, booking.VenueId);
             return View(booking);
         }

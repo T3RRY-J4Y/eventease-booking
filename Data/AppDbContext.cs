@@ -22,13 +22,13 @@ namespace EventEase.Web.Data
                 .HasOne(b => b.Event)
                 .WithMany(e => e.Bookings)
                 .HasForeignKey(b => b.EventId)
-                .OnDelete(DeleteBehavior.Cascade); // Cascade delete on Event
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Booking>()
                 .HasOne(b => b.Venue)
                 .WithMany(v => v.Bookings)
                 .HasForeignKey(b => b.VenueId)
-                .OnDelete(DeleteBehavior.Restrict); // Restrict delete on Venue to avoid multiple cascade paths
+                .OnDelete(DeleteBehavior.Restrict); 
         }
     }
 }

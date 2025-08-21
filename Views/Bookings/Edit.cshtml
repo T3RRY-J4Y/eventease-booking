@@ -14,34 +14,27 @@
             <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
             <input type="hidden" asp-for="BookingId" />
-
-            <!-- Event Dropdown -->
             <div class="form-group mb-3">
                 <label asp-for="EventId" class="control-label"></label>
                 <select asp-for="EventId" class="form-control" asp-items="ViewBag.EventId" id="eventSelect"></select>
                 <span asp-validation-for="EventId" class="text-danger"></span>
             </div>
 
-            <!-- Venue Dropdown -->
             <div class="form-group mb-3">
                 <label asp-for="VenueId" class="control-label"></label>
                 <select asp-for="VenueId" class="form-control" asp-items="ViewBag.VenueId"></select>
                 <span asp-validation-for="VenueId" class="text-danger"></span>
             </div>
 
-            <!-- Booking Date -->
             <div class="form-group mb-3">
                 <label asp-for="BookingDate" class="control-label"></label>
                 <input type="text" class="form-control" id="bookingDateDisplay" readonly value="@Model.BookingDate?.ToString("yyyy-MM-dd")" />
             </div>
 
-            <!-- Start Time -->
             <div class="form-group mb-3">
                 <label>Start Time</label>
                 <input type="text" class="form-control" id="startTimeDisplay" readonly value="@Model.StartTime?.ToString("HH:mm")" />
             </div>
-
-            <!-- End Time -->
             <div class="form-group mb-3">
                 <label>End Time</label>
                 <input type="text" class="form-control" id="endTimeDisplay" readonly value="@Model.EndTime?.ToString("HH:mm")" />

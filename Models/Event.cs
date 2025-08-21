@@ -29,7 +29,7 @@ namespace EventEase.Web.Models
         [Required(ErrorMessage = "Venue is required.")]
         public int VenueId { get; set; }
 
-        public Venue? Venue { get; set; }  // Nullable navigation property
+        public Venue? Venue { get; set; } 
 
         public ICollection<Booking> Bookings { get; set; }
 

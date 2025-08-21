@@ -9,12 +9,12 @@ namespace EventEase.Web.Models
 
         [Required(ErrorMessage = "The Event field is required.")]
         [Display(Name = "Event")]
-        public int? EventId { get; set; }  // ✅ Nullable
+        public int? EventId { get; set; } 
         public Event? Event { get; set; }
 
         [Required(ErrorMessage = "The Venue field is required.")]
         [Display(Name = "Venue")]
-        public int? VenueId { get; set; }  // ✅ Nullable
+        public int? VenueId { get; set; } 
         public Venue? Venue { get; set; }
 
         [DataType(DataType.Date)]
