@@ -1,36 +1,67 @@
-@using Models = EventEase.Web.Models
-@model IEnumerable<Models.Event>
-
-
+@model IEnumerable<EventEase.Web.Models.Event>
 
 @{
     ViewData["Title"] = "Events";
 }
 
-<h1 class="text-center">Events</h1>
-<hr />
+<h1>Events</h1>
 
-<div class="row">
-    @foreach (var evt in Model)
-    {
-        <div class="col-md-6 mb-4">
-            <div class="card h-100 shadow-sm">
-                <img src="@evt.Venue?.ImageUrl" class="card-img-top" alt="@evt.Venue?.VenueName" />
-                <div class="card-body">
-                    <h5 class="card-title">@evt.EventName</h5>
-                    <p class="card-text">@evt.Description</p>
-                    <p><strong>Date:</strong> @evt.EventDate.ToString("yyyy-MM-dd")</p>
-                    <p><strong>Venue:</strong> @evt.Venue?.VenueName</p>
+<p>
+    <a asp-action="Create" class="btn btn-success">Create New Event</a>
+</p>
 
-
-                    <a asp-controller="Events" asp-action="Edit" asp-route-id="@evt.EventId" class="btn btn-sm btn-primary me-2">Edit</a>
-                    <a asp-controller="Events" asp-action="Details" asp-route-id="@evt.EventId" class="btn btn-sm btn-secondary">Details</a>
-                </div>
-            </div>
-        </div>
-    }
-</div>
-
-<div class="text-center mt-4">
-    <a asp-action="Create" class="btn btn-success">Add New Event</a>
-</div>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.EventName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EventDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StartTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                Venue
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EventName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EventDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @item.Venue?.VenueName
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.EventId" class="btn btn-primary btn-sm">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.EventId" class="btn btn-info btn-sm">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.EventId" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

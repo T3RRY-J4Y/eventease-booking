@@ -11,14 +11,14 @@
     <div class="col-md-6">
         <form asp-action="Edit" method="post">
             @Html.AntiForgeryToken()
-            <input type="hidden" asp-for="BookingId" />
-
             <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+            <input type="hidden" asp-for="BookingId" />
 
             <!-- Event Dropdown -->
             <div class="form-group mb-3">
                 <label asp-for="EventId" class="control-label"></label>
-                <select asp-for="EventId" class="form-control" asp-items="ViewBag.EventId" id="EventId"></select>
+                <select asp-for="EventId" class="form-control" asp-items="ViewBag.EventId" id="eventSelect"></select>
                 <span asp-validation-for="EventId" class="text-danger"></span>
             </div>
 
@@ -29,15 +29,26 @@
                 <span asp-validation-for="VenueId" class="text-danger"></span>
             </div>
 
-            <!-- Booking Date Display -->
+            <!-- Booking Date -->
             <div class="form-group mb-3">
                 <label asp-for="BookingDate" class="control-label"></label>
-                <input type="text" class="form-control" id="bookingDateDisplay" readonly
-                       value="@Model.BookingDate?.ToString("yyyy-MM-dd")" />
+                <input type="text" class="form-control" id="bookingDateDisplay" readonly value="@Model.BookingDate?.ToString("yyyy-MM-dd")" />
+            </div>
+
+            <!-- Start Time -->
+            <div class="form-group mb-3">
+                <label>Start Time</label>
+                <input type="text" class="form-control" id="startTimeDisplay" readonly value="@Model.StartTime?.ToString("HH:mm")" />
+            </div>
+
+            <!-- End Time -->
+            <div class="form-group mb-3">
+                <label>End Time</label>
+                <input type="text" class="form-control" id="endTimeDisplay" readonly value="@Model.EndTime?.ToString("HH:mm")" />
             </div>
 
             <div class="form-group text-center mt-3">
-                <input type="submit" value="Save Changes" class="btn btn-primary px-4" />
+                <input type="submit" value="Update Booking" class="btn btn-primary px-4" />
             </div>
         </form>
     </div>
@@ -51,24 +62,42 @@
     @await Html.PartialAsync("_ValidationScriptsPartial")
 
     <script>
-        function updateBookingDate(eventId) {
-            var display = document.getElementById('bookingDateDisplay');
+        function updateBookingInfo(eventId) {
+            var bookingDateDisplay = document.getElementById('bookingDateDisplay');
+            var startTimeDisplay = document.getElementById('startTimeDisplay');
+            var endTimeDisplay = document.getElementById('endTimeDisplay');
 
             if (eventId) {
                 fetch('/Events/GetEventDate/' + eventId)
                     .then(res => res.json())
                     .then(data => {
                         let date = new Date(data.date);
-                        display.value = date.toISOString().split('T')[0];
+                        let start = new Date(data.startTime);
+                        let end = new Date(data.endTime);
+
+                        bookingDateDisplay.value = date.toISOString().split('T')[0];
+                        startTimeDisplay.value = start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        endTimeDisplay.value = end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                     })
-                    .catch(() => { display.value = ''; });
+                    .catch(() => {
+                        bookingDateDisplay.value = '';
+                        startTimeDisplay.value = '';
+                        endTimeDisplay.value = '';
+                    });
             } else {
-                display.value = '';
+                bookingDateDisplay.value = '';
+                startTimeDisplay.value = '';
+                endTimeDisplay.value = '';
             }
         }
 
-        document.getElementById('EventId').addEventListener('change', function () {
-            updateBookingDate(this.value);
+        document.getElementById('eventSelect').addEventListener('change', function () {
+            updateBookingInfo(this.value);
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var initialEventId = document.getElementById('eventSelect').value;
+            if (initialEventId) updateBookingInfo(initialEventId);
         });
     </script>
 }

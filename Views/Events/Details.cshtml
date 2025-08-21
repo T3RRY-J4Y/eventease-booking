@@ -1,38 +1,60 @@
-@model EventEase.Web.Models.Booking
+@model EventEase.Web.Models.Event
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Event Details";
 }
 
-<h1>Details</h1>
+<h1>Event Details</h1>
 
 <div>
-    <h4>Booking</h4>
+    <h4>Event</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Event)
+            @Html.DisplayNameFor(model => model.EventName)
         </dt>
         <dd class="col-sm-10">
-            @Model.Event?.EventName
+            @Html.DisplayFor(model => model.EventName)
         </dd>
 
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Venue)
+            @Html.DisplayNameFor(model => model.EventDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EventDate)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.StartTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.StartTime)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EndTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EndTime)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt class="col-sm-2">
+            Venue
         </dt>
         <dd class="col-sm-10">
             @Model.Venue?.VenueName
         </dd>
-
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.BookingDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Model.BookingDate?.ToString("yyyy-MM-dd")
-        </dd>
     </dl>
 </div>
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.BookingId" class="btn btn-warning">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.EventId" class="btn btn-primary">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </div>

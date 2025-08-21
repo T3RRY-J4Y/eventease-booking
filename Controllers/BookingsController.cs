@@ -58,7 +58,11 @@ namespace EventEase.Web.Controllers
             {
                 var selectedEvent = await _context.Events.FirstOrDefaultAsync(e => e.EventId == booking.EventId);
                 if (selectedEvent != null)
+                {
                     booking.BookingDate = selectedEvent.EventDate;
+                    booking.StartTime = selectedEvent.StartTime;
+                    booking.EndTime = selectedEvent.EndTime;
+                }
 
                 _context.Add(booking);
                 await _context.SaveChangesAsync();
@@ -70,19 +74,6 @@ namespace EventEase.Web.Controllers
             return View(booking);
         }
 
-        private void PopulateDropdowns(int? selectedEventId = null, int? selectedVenueId = null)
-        {
-            var events = _context.Events.ToList();
-            var venues = _context.Venues.ToList();
-
-            ViewBag.EventId = new SelectList(events, "EventId", "EventName", selectedEventId)
-                                  .Prepend(new SelectListItem { Text = "-- Select Event --", Value = "" });
-
-            ViewBag.VenueId = new SelectList(venues, "VenueId", "VenueName", selectedVenueId)
-                                  .Prepend(new SelectListItem { Text = "-- Select Venue --", Value = "" });
-        }
-
-        // GET: Bookings/Edit/5
         // GET: Bookings/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -95,8 +86,6 @@ namespace EventEase.Web.Controllers
             return View(booking);
         }
 
-
-        // POST: Bookings/Edit/5
         // POST: Bookings/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -110,7 +99,11 @@ namespace EventEase.Web.Controllers
                 {
                     var selectedEvent = await _context.Events.FirstOrDefaultAsync(e => e.EventId == booking.EventId);
                     if (selectedEvent != null)
+                    {
                         booking.BookingDate = selectedEvent.EventDate;
+                        booking.StartTime = selectedEvent.StartTime;
+                        booking.EndTime = selectedEvent.EndTime;
+                    }
 
                     _context.Update(booking);
                     await _context.SaveChangesAsync();
@@ -127,7 +120,6 @@ namespace EventEase.Web.Controllers
             PopulateDropdowns(booking.EventId, booking.VenueId);
             return View(booking);
         }
-
 
         // GET: Bookings/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -157,6 +149,18 @@ namespace EventEase.Web.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        private void PopulateDropdowns(int? selectedEventId = null, int? selectedVenueId = null)
+        {
+            var events = _context.Events.ToList();
+            var venues = _context.Venues.ToList();
+
+            ViewBag.EventId = new SelectList(events, "EventId", "EventName", selectedEventId)
+                                  .Prepend(new SelectListItem { Text = "-- Select Event --", Value = "" });
+
+            ViewBag.VenueId = new SelectList(venues, "VenueId", "VenueName", selectedVenueId)
+                                  .Prepend(new SelectListItem { Text = "-- Select Venue --", Value = "" });
         }
 
         private bool BookingExists(int id)

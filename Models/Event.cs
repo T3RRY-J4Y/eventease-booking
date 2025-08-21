@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using EventEase.Web.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace EventEase.Web.Models
@@ -15,6 +14,14 @@ namespace EventEase.Web.Models
         [Required(ErrorMessage = "Event Date is required.")]
         [DataType(DataType.Date)]
         public DateTime EventDate { get; set; }
+
+        [Required(ErrorMessage = "Start Time is required.")]
+        [DataType(DataType.Time)]
+        public TimeSpan StartTime { get; set; }
+
+        [Required(ErrorMessage = "End Time is required.")]
+        [DataType(DataType.Time)]
+        public TimeSpan EndTime { get; set; }
 
         [Required(ErrorMessage = "Description is required.")]
         public string Description { get; set; } = string.Empty;
@@ -31,5 +38,4 @@ namespace EventEase.Web.Models
             Bookings = new HashSet<Booking>();
         }
     }
-
 }

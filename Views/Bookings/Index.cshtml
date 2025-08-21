@@ -4,42 +4,37 @@
     ViewData["Title"] = "Bookings";
 }
 
-<h1 class="text-center">Bookings</h1>
+<h1>Bookings</h1>
 
-<p class="text-center">
-    <a asp-action="Create" class="btn btn-success">Create New</a>
+<p>
+    <a asp-action="Create" class="btn btn-success">Create New Booking</a>
 </p>
 
-<table class="table table-striped table-bordered">
-    <thead class="table-dark">
+<table class="table table-striped">
+    <thead>
         <tr>
-            <th>Event Name</th>
+            <th>Event</th>
+            <th>Start Time</th>
+            <th>End Time</th>
             <th>Venue</th>
             <th>Booking Date</th>
-            <th>Actions</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-        @if (Model != null && Model.Any())
-        {
-            foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.Event?.EventName</td>
-                    <td>@item.Venue?.VenueName</td>
-                    <td>@item.BookingDate?.ToString("yyyy-MM-dd")</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.BookingId" class="btn btn-sm btn-primary me-1">Edit</a>
-                        <a asp-action="Details" asp-route-id="@item.BookingId" class="btn btn-sm btn-secondary me-1">Details</a>
-                        <a asp-action="Delete" asp-route-id="@item.BookingId" class="btn btn-sm btn-danger">Delete</a>
-                    </td>
-                </tr>
-            }
-        }
-        else
+        @foreach (var item in Model)
         {
             <tr>
-                <td colspan="4" class="text-center">No bookings available.</td>
+                <td>@item.Event?.EventName</td>
+                <td>@item.Event?.StartTime</td>
+                <td>@item.Event?.EndTime</td>
+                <td>@item.Venue?.VenueName</td>
+                <td>@item.BookingDate?.ToString("yyyy-MM-dd")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.BookingId" class="btn btn-primary btn-sm">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.BookingId" class="btn btn-info btn-sm">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.BookingId" class="btn btn-danger btn-sm">Delete</a>
+                </td>
             </tr>
         }
     </tbody>

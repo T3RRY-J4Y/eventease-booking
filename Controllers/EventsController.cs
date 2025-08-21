@@ -59,7 +59,7 @@ namespace EventEase.Web.Controllers
         // POST: Events/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EventId,EventName,EventDate,Description,VenueId")] Event @event)
+        public async Task<IActionResult> Create([Bind("EventId,EventName,EventDate,StartTime,EndTime,Description,VenueId")] Event @event)
         {
             if (ModelState.IsValid)
             {
@@ -94,7 +94,7 @@ namespace EventEase.Web.Controllers
         // POST: Events/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EventId,EventName,EventDate,Description,VenueId")] Event @event)
+        public async Task<IActionResult> Edit(int id, [Bind("EventId,EventName,EventDate,StartTime,EndTime,Description,VenueId")] Event @event)
         {
             if (id != @event.EventId) return NotFound();
 

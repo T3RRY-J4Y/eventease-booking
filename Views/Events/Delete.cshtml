@@ -1,42 +1,64 @@
-@model EventEase.Web.Models.Booking
+@model EventEase.Web.Models.Event
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete Event";
 }
 
-<h1>Delete</h1>
+<h1>Delete Event</h1>
 
-<h3>Are you sure you want to delete this booking?</h3>
+<h4>Are you sure you want to delete this event?</h4>
+<hr />
+
 <div>
-    <h4>Booking</h4>
-    <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Event)
+            @Html.DisplayNameFor(model => model.EventName)
         </dt>
         <dd class="col-sm-10">
-            @Model.Event?.EventName
+            @Html.DisplayFor(model => model.EventName)
         </dd>
 
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Venue)
+            @Html.DisplayNameFor(model => model.EventDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EventDate)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.StartTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.StartTime)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EndTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EndTime)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt class="col-sm-2">
+            Venue
         </dt>
         <dd class="col-sm-10">
             @Model.Venue?.VenueName
         </dd>
-
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.BookingDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Model.BookingDate?.ToString("yyyy-MM-dd")
-        </dd>
     </dl>
-
-    <form asp-action="Delete" method="post">
-        @Html.AntiForgeryToken()
-        <input type="hidden" asp-for="BookingId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
 </div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="EventId" />
+    <div class="form-group mt-3">
+        <input type="submit" value="Delete" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</form>
