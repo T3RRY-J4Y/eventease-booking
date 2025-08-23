@@ -4,68 +4,60 @@
     ViewData["Title"] = "Events";
 }
 
-<h1>Events</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="fw-bold">Events</h1>
+    <a asp-action="Create" class="btn btn-success">
+        <i class="fa fa-plus me-2"></i> Create New Event
+    </a>
+</div>
 
-<p>
-    <a asp-action="Create" class="btn btn-success">Create New Event</a>
-</p>
-
-<table class="table table-striped table-hover table-bordered align-middle">
-    <thead class="table-primary">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.EventName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EventDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StartTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EndTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                Venue
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+<div class="table-responsive">
+    <table class="table table-striped table-hover table-bordered align-middle">
+        <thead class="table-primary">
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EventName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EventDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StartTime)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EndTime)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @item.Venue?.VenueName
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.EventId" class="btn btn-primary btn-sm">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.EventId" class="btn btn-info btn-sm">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.EventId" class="btn btn-danger btn-sm">Delete</a>
-                </td>
+                <th>@Html.DisplayNameFor(model => model.EventName)</th>
+                <th>@Html.DisplayNameFor(model => model.EventDate)</th>
+                <th>@Html.DisplayNameFor(model => model.StartTime)</th>
+                <th>@Html.DisplayNameFor(model => model.EndTime)</th>
+                <th>@Html.DisplayNameFor(model => model.Description)</th>
+                <th>Venue</th>
+                <th class="text-center">Actions</th>
             </tr>
-        }
-        <tr>
-            <td colspan="5" class="text-center">No events available.</td>
-        </tr>
-        
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.EventName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.EventDate)</td>
+                        <td>@Html.DisplayFor(modelItem => item.StartTime)</td>
+                        <td>@Html.DisplayFor(modelItem => item.EndTime)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                        <td>@item.Venue?.VenueName</td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group">
+                                <a asp-action="Edit" asp-route-id="@item.EventId" class="btn btn-sm btn-primary">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                                <a asp-action="Details" asp-route-id="@item.EventId" class="btn btn-sm btn-info text-white">
+                                    <i class="fa fa-info-circle"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.EventId" class="btn btn-sm btn-danger">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7" class="text-center text-muted">No events available.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
