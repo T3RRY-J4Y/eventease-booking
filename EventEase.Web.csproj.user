@@ -11,5 +11,6 @@
     <WebStackScaffolding_DbContextTypeFullName>EventEase.Web.Data.AppDbContext</WebStackScaffolding_DbContextTypeFullName>
     <WebStackScaffolding_IsAsyncSelected>False</WebStackScaffolding_IsAsyncSelected>
     <WebStackScaffolding_IsViewGenerationSelected>True</WebStackScaffolding_IsViewGenerationSelected>
+    <NameOfLastUsedPublishProfile>C:\Users\RC_Student_lab\source\repos\EventEase\EventEase.Web\Properties\PublishProfiles\ST10202185 - Web Deploy.pubxml</NameOfLastUsedPublishProfile>
   </PropertyGroup>
 </Project>
