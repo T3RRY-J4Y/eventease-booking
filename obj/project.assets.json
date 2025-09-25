@@ -8406,19 +8406,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\RC_Student_lab\\.nuget\\packages\\": {}
+    "C:\\Users\\RC_Student_Lab\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\RC_Student_lab\\source\\repos\\EventEase\\EventEase.Web\\EventEase.Web.csproj",
+      "projectUniqueName": "C:\\Users\\RC_Student_Lab\\source\\repos\\T3RRY-J4Y\\EventEase.Web\\EventEase.Web\\EventEase.Web.csproj",
       "projectName": "EventEase.Web",
-      "projectPath": "C:\\Users\\RC_Student_lab\\source\\repos\\EventEase\\EventEase.Web\\EventEase.Web.csproj",
-      "packagesPath": "C:\\Users\\RC_Student_lab\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\RC_Student_lab\\source\\repos\\EventEase\\EventEase.Web\\obj\\",
+      "projectPath": "C:\\Users\\RC_Student_Lab\\source\\repos\\T3RRY-J4Y\\EventEase.Web\\EventEase.Web\\EventEase.Web.csproj",
+      "packagesPath": "C:\\Users\\RC_Student_Lab\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\RC_Student_Lab\\source\\repos\\T3RRY-J4Y\\EventEase.Web\\EventEase.Web\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\RC_Student_lab\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\RC_Student_Lab\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -8438,7 +8443,13 @@
         "warnAsError": [
           "NU1605"
         ]
-      }
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      },
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net8.0": {
@@ -8494,7 +8505,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

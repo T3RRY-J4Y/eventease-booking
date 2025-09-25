@@ -83,6 +83,14 @@ namespace EventEase.Web.Controllers
 
             try
             {
+                // Check if venue has active bookings
+                var hasBookings = await _context.Bookings.AnyAsync(b => b.VenueId == venue.VenueId);
+                if (hasBookings)
+                {
+                    ModelState.AddModelError("", "This venue has active bookings and cannot be edited.");
+                    return View(venue);
+                }
+
                 _context.Update(venue);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -102,7 +110,7 @@ namespace EventEase.Web.Controllers
         }
 
         // GET: Venues/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
 
@@ -131,5 +139,6 @@ namespace EventEase.Web.Controllers
         {
             return _context.Venues.Any(e => e.VenueId == id);
         }
+
     }
 }
