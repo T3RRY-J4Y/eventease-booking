@@ -185,22 +185,25 @@ namespace EventEase.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            try
+            var booking = await _context.Bookings
+                .Include(b => b.Event)
+                .Include(b => b.Venue)
+                .FirstOrDefaultAsync(b => b.BookingId == id);
+
+            if (booking == null) return NotFound();
+
+            // Prevent deletion if event/venue is still active
+            if (booking.Event != null && booking.Event.EventDate >= DateTime.Today)
             {
-                var booking = await _context.Bookings.FindAsync(id);
-                if (booking != null)
-                {
-                    _context.Bookings.Remove(booking);
-                    await _context.SaveChangesAsync();
-                }
-            }
-            catch (Exception)
-            {
-                ModelState.AddModelError("", "Unable to delete booking. Please try again.");
+                TempData["ErrorMessage"] = "You cannot delete a booking for an upcoming event.";
+                return RedirectToAction(nameof(Index));
             }
 
+            _context.Bookings.Remove(booking);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         private void PopulateDropdowns(int? selectedEventId = null, int? selectedVenueId = null)
         {
