@@ -17,14 +17,20 @@ namespace EventEase.Web.Controllers
             _context = context;
         }
 
-        // GET: Bookings
-        public async Task<IActionResult> Index()
+        // GET: Bookings (with search + details view)
+        public async Task<IActionResult> Index(string? searchTerm)
         {
-            var bookings = _context.Bookings
-                .Include(b => b.Event)
-                .Include(b => b.Venue);
+            var query = _context.BookingDetailsView.AsQueryable();
 
-            return View(await bookings.ToListAsync());
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(b =>
+                    b.BookingId.ToString().Contains(searchTerm) ||
+                    b.EventName.Contains(searchTerm));
+            }
+
+            var results = await query.ToListAsync();
+            return View(results);
         }
 
         // GET: Bookings/Details/5
@@ -64,10 +70,32 @@ namespace EventEase.Web.Controllers
                     booking.EndTime = selectedEvent.EndTime;
                 }
 
-                _context.Add(booking);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                // Double booking prevention
+                bool overlapExists = await _context.Bookings.AnyAsync(b =>
+                    b.VenueId == booking.VenueId &&
+                    b.BookingDate == booking.BookingDate &&
+                    ((booking.StartTime >= b.StartTime && booking.StartTime < b.EndTime) ||
+                     (booking.EndTime > b.StartTime && booking.EndTime <= b.EndTime)));
+
+                if (overlapExists)
+                {
+                    ModelState.AddModelError("", "This venue is already booked during the selected time.");
+                    PopulateDropdowns(booking.EventId, booking.VenueId);
+                    return View(booking);
+                }
+
+                try
+                {
+                    _context.Add(booking);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception)
+                {
+                    ModelState.AddModelError("", "An error occurred while creating the booking. Please try again.");
+                }
             }
+
             PopulateDropdowns(booking.EventId, booking.VenueId);
             return View(booking);
         }
@@ -103,6 +131,21 @@ namespace EventEase.Web.Controllers
                         booking.EndTime = selectedEvent.EndTime;
                     }
 
+                    // Double booking prevention (exclude current booking)
+                    bool overlapExists = await _context.Bookings.AnyAsync(b =>
+                        b.BookingId != booking.BookingId &&
+                        b.VenueId == booking.VenueId &&
+                        b.BookingDate == booking.BookingDate &&
+                        ((booking.StartTime >= b.StartTime && booking.StartTime < b.EndTime) ||
+                         (booking.EndTime > b.StartTime && booking.EndTime <= b.EndTime)));
+
+                    if (overlapExists)
+                    {
+                        ModelState.AddModelError("", "This venue is already booked during the selected time.");
+                        PopulateDropdowns(booking.EventId, booking.VenueId);
+                        return View(booking);
+                    }
+
                     _context.Update(booking);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -112,7 +155,12 @@ namespace EventEase.Web.Controllers
                     if (!BookingExists(booking.BookingId)) return NotFound();
                     else throw;
                 }
+                catch (Exception)
+                {
+                    ModelState.AddModelError("", "An error occurred while updating the booking. Please try again.");
+                }
             }
+
             PopulateDropdowns(booking.EventId, booking.VenueId);
             return View(booking);
         }
@@ -137,11 +185,18 @@ namespace EventEase.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var booking = await _context.Bookings.FindAsync(id);
-            if (booking != null)
+            try
             {
-                _context.Bookings.Remove(booking);
-                await _context.SaveChangesAsync();
+                var booking = await _context.Bookings.FindAsync(id);
+                if (booking != null)
+                {
+                    _context.Bookings.Remove(booking);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError("", "Unable to delete booking. Please try again.");
             }
 
             return RedirectToAction(nameof(Index));

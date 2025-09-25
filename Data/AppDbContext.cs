@@ -13,6 +13,7 @@ namespace EventEase.Web.Data
         public DbSet<Venue> Venues { get; set; } = default!;
         public DbSet<Event> Events { get; set; } = default!;
         public DbSet<Booking> Bookings { get; set; } = default!;
+        public DbSet<BookingDetailsView> BookingDetailsView { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,7 +29,11 @@ namespace EventEase.Web.Data
                 .HasOne(b => b.Venue)
                 .WithMany(v => v.Bookings)
                 .HasForeignKey(b => b.VenueId)
-                .OnDelete(DeleteBehavior.Restrict); 
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<BookingDetailsView>()
+                .HasNoKey()
+                .ToView("BookingDetailsView");
         }
     }
 }
