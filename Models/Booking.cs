@@ -18,16 +18,18 @@ namespace EventEase.Web.Models
         public int? VenueId { get; set; }
         public Venue? Venue { get; set; }
 
-        [Required(ErrorMessage = "Booking Date is required.")]
+        [Required(ErrorMessage = "Booking date is required.")]
         [DataType(DataType.Date)]
         [Display(Name = "Booking Date")]
         public DateTime? BookingDate { get; set; }
 
-        [Required(ErrorMessage = "Start Time is required.")]
+        [Required(ErrorMessage = "Start time is required.")]
         public TimeSpan? StartTime { get; set; }
 
-        [Required(ErrorMessage = "End Time is required.")]
+        [Required(ErrorMessage = "End time is required.")]
         public TimeSpan? EndTime { get; set; }
+
+        // Custom validation
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (StartTime.HasValue && EndTime.HasValue && EndTime <= StartTime)

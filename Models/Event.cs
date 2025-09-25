@@ -8,19 +8,19 @@ namespace EventEase.Web.Models
     {
         public int EventId { get; set; }
 
-        [Required(ErrorMessage = "Event Name is required.")]
+        [Required(ErrorMessage = "Event name is required.")]
         [StringLength(150, ErrorMessage = "Event name cannot exceed 150 characters.")]
         public string EventName { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Event Date is required.")]
+        [Required(ErrorMessage = "Event date is required.")]
         [DataType(DataType.Date)]
         public DateTime EventDate { get; set; }
 
-        [Required(ErrorMessage = "Start Time is required.")]
+        [Required(ErrorMessage = "Start time is required.")]
         [DataType(DataType.Time)]
         public TimeSpan StartTime { get; set; }
 
-        [Required(ErrorMessage = "End Time is required.")]
+        [Required(ErrorMessage = "End time is required.")]
         [DataType(DataType.Time)]
         public TimeSpan EndTime { get; set; }
 
@@ -35,13 +35,15 @@ namespace EventEase.Web.Models
 
         public ICollection<Booking> Bookings { get; set; }
 
-        [Required(ErrorMessage = "An event image is required.")]
+        [Required(ErrorMessage = "Event image is required.")]
+        [Url(ErrorMessage = "Please enter a valid URL for the event image.")]
         public string ImageUrl { get; set; } = string.Empty;
 
         public Event()
         {
             Bookings = new HashSet<Booking>();
         }
+
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (EndTime <= StartTime)
