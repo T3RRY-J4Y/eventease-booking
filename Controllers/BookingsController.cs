@@ -211,10 +211,10 @@ namespace EventEase.Web.Controllers
             var venues = _context.Venues.ToList();
 
             ViewBag.EventId = new SelectList(events, "EventId", "EventName", selectedEventId)
-                                  .Prepend(new SelectListItem { Text = "-- Select Event --", Value = "" });
+                                  .Prepend(new SelectListItem { Text = "Select Event", Value = "" });
 
             ViewBag.VenueId = new SelectList(venues, "VenueId", "VenueName", selectedVenueId)
-                                  .Prepend(new SelectListItem { Text = "-- Select Venue --", Value = "" });
+                                  .Prepend(new SelectListItem { Text = "Select Venue", Value = "" });
         }
 
         private bool BookingExists(int id)
